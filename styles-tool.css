@@ -1,0 +1,44 @@
+.calc-field select,
+.calc-field input {
+  min-height: 44px;
+}
+
+.field-help {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 2px 0 14px;
+}
+
+.field-help strong {
+  color: var(--text-dim);
+}
+
+.form-error {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 8px;
+  color: var(--red);
+  font-size: 13px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+}
+
+.fee-note {
+  margin-top: 16px;
+}
+
+.next-step {
+  border-color: rgba(110, 231, 168, 0.28);
+}
+
+@media (max-width: 620px) {
+  .calc-grid,
+  .stat-row {
+    grid-template-columns: 1fr;
+  }
+
+  .result-banner {
+    align-items: flex-start;
+  }
+}
