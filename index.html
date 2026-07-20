@@ -3,34 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quanto você paga para operar?</title>
-<meta name="description" content="Calcule quanto as taxas de trading podem custar por mês e por ano.">
-<meta name="keywords" content="taxas de trading, calculadora de taxas cripto, custos de futuros, maker taker">
+<title>Quanto você paga em taxas de execução?</title>
+<meta name="description" content="Calcule o custo mensal e anual da taxa de execução informada e veja quais custos de operação ficam fora da estimativa.">
 <meta name="robots" content="index, follow">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.goatcounter.com; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <link rel="canonical" href="https://quanto-em-taxas.dlt.academy/">
 
-<!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Quanto você paga para operar?">
-<meta property="og:description" content="Calcule quanto as taxas de trading podem custar por mês e por ano.">
+<meta property="og:site_name" content="DLT Academy">
+<meta property="og:title" content="Quanto você paga em taxas de execução?">
+<meta property="og:description" content="Calcule o custo mensal e anual da taxa informada e identifique custos que não entram na estimativa.">
 <meta property="og:url" content="https://quanto-em-taxas.dlt.academy/">
 <meta property="og:image" content="https://quanto-em-taxas.dlt.academy/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Quanto você paga em taxas de execução? — calculadora da DLT Academy">
 <meta property="og:locale" content="pt_BR">
 
-<!-- Twitter/X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Quanto você paga para operar?">
-<meta name="twitter:description" content="Calcule quanto as taxas de trading podem custar por mês e por ano.">
+<meta name="twitter:title" content="Quanto você paga em taxas de execução?">
+<meta name="twitter:description" content="Calcule o custo mensal e anual da taxa informada e identifique custos que não entram na estimativa.">
 <meta name="twitter:image" content="https://quanto-em-taxas.dlt.academy/og-image.png">
+<meta name="twitter:image:alt" content="Quanto você paga em taxas de execução? — calculadora da DLT Academy">
 
+<meta name="theme-color" content="#06090F">
 <link rel="icon" type="image/png" href="assets/dlt-mark.png">
 <link rel="stylesheet" href="styles-base.css">
 <link rel="stylesheet" href="styles-tool.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Quanto você paga em taxas de execução?",
+  "description": "Calculadora educacional do custo mensal e anual da taxa de execução informada, com limites e custos excluídos apresentados separadamente.",
+  "url": "https://quanto-em-taxas.dlt.academy/",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "pt-BR",
+  "isAccessibleForFree": true,
+  "image": "https://quanto-em-taxas.dlt.academy/og-image.png",
+  "offers": { "@type": "Offer", "price": 0, "priceCurrency": "BRL" },
+  "publisher": { "@type": "Organization", "name": "DLT Academy", "url": "https://dlt.academy/" }
+}
+</script>
 </head>
 <body>
-
 <header class="top">
   <div class="wrap">
     <a class="brand" href="https://dlt.academy/"><img src="assets/dlt-logo-light.png" alt="DLT Academy"></a>
@@ -39,14 +59,13 @@
 
 <main id="top">
   <div class="wrap">
-
     <section class="hero">
       <span class="disclaimer-badge">Ferramenta educacional · não é recomendação de investimento</span>
-      <h1 id="headline">Quanto você paga para operar?</h1>
-      <p class="subtitle" id="subheadline">Transforme uma taxa aparentemente pequena no custo mensal e anual das suas operações.</p>
+      <h1 id="headline">Quanto você paga em taxas de execução?</h1>
+      <p class="subtitle" id="subheadline">Transforme a taxa informada no custo mensal e anual — sem confundir essa conta com o custo total da operação.</p>
 
       <div class="card">
-        <h2><span class="num">1</span>Calcule seu custo</h2>
+        <h2><span class="num">1</span>Calcule a taxa de execução</h2>
         <p class="section-desc">Use o volume total executado: some compras e vendas. Os valores ficam somente no seu navegador.</p>
 
         <form id="fee-form" novalidate>
@@ -65,10 +84,11 @@
               </select>
             </div>
             <div class="calc-field">
-              <label for="market">Mercado principal</label>
+              <label for="market">Qual mercado entra nesta estimativa?</label>
               <select id="market" name="market" required>
-                <option value="futures">Futuros</option>
-                <option value="spot">Spot</option>
+                <option value="">Selecione conscientemente</option>
+                <option value="spot">Compra e venda à vista (Spot)</option>
+                <option value="futures">Contratos futuros</option>
               </select>
             </div>
             <div class="calc-field" id="binance-account-field">
@@ -84,23 +104,22 @@
               <input id="monthly-volume" name="monthly-volume" type="number" min="1" max="1000000000000" step="100" inputmode="decimal" placeholder="Ex.: 50000" required>
             </div>
             <div class="calc-field">
-              <label for="fee-rate">Sua taxa por execução (%)</label>
+              <label for="fee-rate">Taxa por execução exibida na sua conta (%)</label>
               <input id="fee-rate" name="fee-rate" type="number" min="0" max="10" step="0.001" inputmode="decimal" placeholder="Ex.: 0,05" required>
             </div>
           </div>
-          <p class="field-help">Informe a taxa exibida na sua conta. Exemplo: digite <strong>0,05</strong> para uma taxa de 0,05%.</p>
+          <p class="field-help">Exemplo: digite <strong>0,05</strong> para uma taxa de 0,05%. Não informe funding, spread ou outros custos neste campo.</p>
           <p class="form-error" id="form-error" role="alert" hidden></p>
-          <button class="btn btn-primary btn-block" type="submit">Calcular meu custo</button>
+          <button class="btn btn-primary btn-block" type="submit">Calcular taxa de execução</button>
         </form>
-
       </div>
 
       <div class="card" id="result-card" aria-live="polite" hidden>
-        <h2><span class="num">2</span>Seu Raio-X de taxas</h2>
+        <h2><span class="num">2</span>Estimativa da taxa de execução</h2>
         <div class="result-banner bad">
           <div>
             <div class="big-stat" id="annual-cost">R$ 0</div>
-            <div class="stat-label">custo anual estimado</div>
+            <div class="stat-label">taxa de execução estimada por ano</div>
           </div>
         </div>
         <div class="stat-row">
@@ -112,7 +131,10 @@
           <div class="finding-title">O que entra nesta estimativa</div>
           <div class="finding-text" id="result-explanation"></div>
         </div>
-        <p class="fine-print">Estimativa baseada somente no volume e na taxa informados. Não inclui spread, slippage, funding, saques, impostos nem variações de tier. Confira sempre o extrato e a tabela vigente da sua corretora.</p>
+        <div class="finding sev-2 fee-note">
+          <div class="finding-title">O que não entra — isto não é custo total</div>
+          <div class="finding-text">Spread, slippage, funding, saques, impostos, variações de tier e outros custos específicos da plataforma ficam fora. Em futuros, o funding pode ser positivo ou negativo e variar ao longo do tempo. Confira extratos e condições vigentes.</div>
+        </div>
       </div>
 
       <div class="card next-step" id="education-block" hidden>
@@ -127,9 +149,9 @@
         <div class="convert-headline">Compare as condições de uma conta nova na Binance</div>
         <div class="convert-sub">Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.</div>
         <ul class="offer-list">
-          <li>Cashback vitalício em parte das taxas elegíveis</li>
-          <li>Válido para contas novas e elegíveis</li>
-          <li>Cadastro não obriga depósito ou operação</li>
+          <li>Cadastre-se pelo link de indicação e receba cashback vitalício em parte das taxas elegíveis.</li>
+          <li>Válido para contas novas e elegíveis.</li>
+          <li>Cadastro não obriga depósito ou operação.</li>
         </ul>
         <div class="btn-row">
           <a class="btn btn-primary" id="cta-ref" href="#" target="_blank" rel="sponsored nofollow noopener noreferrer" referrerpolicy="no-referrer">Ver condições da Binance</a>
@@ -137,7 +159,6 @@
         <p class="affiliate-disclosure">Este é um link de afiliado. A DLT Academy pode receber comissão se uma conta elegível for criada e utilizada. As condições exibidas pela Binance no cadastro prevalecem.</p>
       </div>
     </section>
-
   </div>
 </main>
 
@@ -152,7 +173,7 @@
 <script src="config.js"></script>
 <script src="js/tracking.js"></script>
 <script src="js/canvas-cards.js"></script>
-<!-- <script src="js/csv-parser.js"></script> descomente se a ferramenta usar upload de CSV -->
+<script src="js/fee-model.js"></script>
 <script src="js/app.js"></script>
 <script src="js/bootstrap.js"></script>
 </body>
