@@ -1,23 +1,53 @@
-# Quanto você paga para operar?
+# Quanto você paga em taxas de execução?
 
-Calcule quanto as taxas de trading podem custar por mês e por ano.
+Calculadora educacional que transforma o volume mensal e a taxa por execução informada em uma estimativa mensal e anual.
 
-Construído com o [ferramenta-kit](https://github.com/dltacademy/ferramenta-kit) — página única, zero backend, zero build.
+O resultado não representa o custo total da operação. Spread, slippage, funding, saques, impostos, tiers e outros custos específicos ficam separados e visíveis.
 
-## Antes de divulgar
+## Roteamento preservado
 
-1. Confirmar `config.js`: link Binance, canais e URL final. GoatCounter permanece opcional; usar primeiro painéis afiliados, Google e GitHub.
-2. `og-image.png` específico já gerado; revisar se a copy da ferramenta mudar.
-3. Habilitar GitHub Pages no repo (Settings → Pages → Source: GitHub Actions).
-4. Testar local: `python3 -m http.server 8000`.
-5. Rodar `python3 security_check.py .` e `node --check` nos arquivos JS; corrigir sem adicionar `unsafe-inline` ou `unsafe-eval`.
-6. Seguir `SECURITY_BASELINE.md` e o gate do `CONVERSION_FRAMEWORK.md`: testar recomendações, parâmetros inválidos, console e links deslogado.
-7. Somente então trocar `noindex` por `index, follow`, liberar o `robots.txt` e divulgar com `?c=<canal>&v=<variante>`.
+- cliente Binance: resultado + próximo passo educacional, sem CTA de conta nova;
+- pessoa que ainda não opera: educação antes de produto, sem CTA;
+- pessoa que opera em outra corretora e informou não possuir Binance: uma oferta contextual de conta nova;
+- cadastro não é apresentado como obrigação de depósito ou operação.
 
-## Domínio
+## Estado de publicação
 
-Esta ferramenta pertence ao ecossistema **DLT Academy**: URL canônica em `https://quanto-em-taxas.dlt.academy/`, logo apontando para `https://dlt.academy/` e registro no portal + sitemap antes da indexação.
+A ferramenta permanece em `index, follow`. Este lote não altera indexação, portal, sitemap, Pages ou DNS.
 
-## Estrutura
+Se a revisão humana concluir que as mudanças de copy exigem novo gate público, a indexação deve ser tratada em decisão separada — não automaticamente neste PR.
 
-Ver o [README do kit](https://github.com/dltacademy/ferramenta-kit) pra entender o padrão completo. `SECURITY_BASELINE.md` e `CONVERSION_FRAMEWORK.md` são normativos.
+## Arquitetura
+
+- HTML/CSS/JavaScript vanilla;
+- zero backend, zero build e zero dependência externa nova;
+- respostas processadas somente no navegador;
+- cálculo e regras de roteamento isolados em `js/fee-model.js`;
+- tracking opcional por `?c=<canal>&v=<variante>` com parâmetros sanitizados;
+- CSP restritiva, JSON-LD validado e Actions fixadas por SHA.
+
+## Testes
+
+```bash
+python3 -m py_compile security_check.py
+python3 security_check.py .
+node --check config.js
+find js -name '*.js' -print0 | xargs -0 -n1 node --check
+node tests/test-fee-model.mjs
+node tests/test-contract.mjs
+```
+
+O workflow `Validate` executa esses gates em pull requests. O deploy do GitHub Pages continua restrito a pushes em `main`.
+
+## Gates humanos
+
+Antes de merge:
+
+1. revisar desktop estreito/largo e celular;
+2. testar teclado, foco e console;
+3. confirmar valores com exemplos manuais;
+4. abrir o link afiliado em sessão deslogada e validar benefício, país e elegibilidade;
+5. revisar se o texto distingue suficientemente taxa de execução e custo total;
+6. obter aprovação independente e fazer merge deliberado.
+
+URL canônica: `https://quanto-em-taxas.dlt.academy/`.
