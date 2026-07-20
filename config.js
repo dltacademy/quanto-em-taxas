@@ -17,6 +17,9 @@ const CONFIG = {
     "tg-ads": "https://www.binance.com/register?ref=BOSS2026",
   },
 
+  // Variantes publicáveis; valores desconhecidos voltam para "a".
+  allowedVariants: ["a", "b"],
+
   // O MVP usa uma única oferta contextual. `default` preserva o canal.
   offers: {
     default: {
