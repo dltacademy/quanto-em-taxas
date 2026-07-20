@@ -64,8 +64,16 @@ function showEducationRoute(exchange) {
   track("roteador_resultado_sem_oferta");
 }
 
+const affiliateUrl = getOfferLink("default");
+const affiliateAvailable = Boolean(affiliateUrl && affiliateUrl !== "#");
+
 function showAffiliateRoute() {
   educationBlock.hidden = true;
+  if (!affiliateAvailable) {
+    convertBlock.classList.remove("visible");
+    track("roteador_resultado_sem_oferta");
+    return;
+  }
   convertBlock.classList.add("visible");
   track("roteador_resultado_binance");
 }
@@ -86,12 +94,12 @@ function renderResult(exchange, market, volume, feeRate) {
 
 exchangeInput.addEventListener("change", updateBinanceQuestion);
 
-const affiliateUrl = getOfferLink("default");
-if (affiliateUrl && affiliateUrl !== "#") {
+if (affiliateAvailable) {
   affiliateCta.href = affiliateUrl;
   affiliateCta.addEventListener("click", () => track("clique_oferta_binance_principal"));
 } else {
   affiliateCta.hidden = true;
+  convertBlock.classList.remove("visible");
 }
 
 form.addEventListener("submit", (event) => {
@@ -101,9 +109,8 @@ form.addEventListener("submit", (event) => {
   const exchange = exchangeInput.value;
   const market = document.getElementById("market").value;
   const hasBinance = exchange === "binance" ? "yes" : hasBinanceInput.value;
-  const volume = Number(document.getElementById("monthly-volume").value);
-  const feeRaw = document.getElementById("fee-rate").value.trim();
-  const feeRate = feeRaw === "" ? Number.NaN : Number(feeRaw.replace(",", "."));
+  const volume = parseDecimalInput(document.getElementById("monthly-volume").value);
+  const feeRate = parseDecimalInput(document.getElementById("fee-rate").value);
   const validationError = validateFeeInputs({ exchange, market, hasBinance, volume, feeRate });
 
   if (validationError) {
