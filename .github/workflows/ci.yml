@@ -21,7 +21,7 @@ jobs:
         run: |
           node --check config.js
           find js -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: Deterministic contracts
-        run: |
-          node tests/test-fee-model.mjs
-          node tests/test-contract.mjs
+      - name: Fee model
+        run: node tests/test-fee-model.mjs
+      - name: Technical contract
+        run: node tests/test-contract.mjs
