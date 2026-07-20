@@ -8,7 +8,12 @@ function getChannel() {
 }
 
 function getVariant() {
-  return readSafeParam("v") || "a";
+  const allowed = Array.isArray(CONFIG.allowedVariants)
+    ? CONFIG.allowedVariants.filter((value) => typeof value === "string")
+    : [];
+  const fallback = allowed.includes("a") ? "a" : allowed[0] || "a";
+  const variant = readSafeParam("v");
+  return variant && allowed.includes(variant) ? variant : fallback;
 }
 
 function getSafeExternalUrl(value) {
@@ -22,8 +27,13 @@ function getSafeExternalUrl(value) {
 
 function getRefLink() {
   const channel = getChannel();
-  if (channel && CONFIG.refByChannel && CONFIG.refByChannel[channel]) {
-    return getSafeExternalUrl(CONFIG.refByChannel[channel]);
+  const channelMap = CONFIG.refByChannel;
+  if (
+    channel &&
+    channelMap &&
+    Object.prototype.hasOwnProperty.call(channelMap, channel)
+  ) {
+    return getSafeExternalUrl(channelMap[channel]);
   }
   return getSafeExternalUrl(CONFIG.refDefault);
 }
