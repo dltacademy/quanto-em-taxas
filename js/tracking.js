@@ -1,20 +1,14 @@
-// ============================================================
-// Tracking genérico por canal/variante + resolução de link ref.
-// Cada ferramenta define seu próprio objeto CONFIG (ver config.example.js)
-// com o formato: { refByChannel: {...}, refDefault, offers,
-// telegramUsername, goatCounterSite, siteUrl, brand }.
-// ============================================================
+function readSafeParam(name) {
+  const value = new URLSearchParams(window.location.search).get(name);
+  return value && /^[A-Za-z0-9_-]{1,40}$/.test(value) ? value : null;
+}
 
 function getChannel() {
-  const params = new URLSearchParams(window.location.search);
-  const channel = params.get("c");
-  return channel && /^[A-Za-z0-9_-]{1,40}$/.test(channel) ? channel : null;
+  return readSafeParam("c");
 }
 
 function getVariant() {
-  const params = new URLSearchParams(window.location.search);
-  const v = params.get("v");
-  return v === "b" ? "b" : "a";
+  return readSafeParam("v") || "a";
 }
 
 function getSafeExternalUrl(value) {
@@ -34,44 +28,44 @@ function getRefLink() {
   return getSafeExternalUrl(CONFIG.refDefault);
 }
 
-function getTelegramLink(prefill) {
-  if (!isTelegramConfigured()) return null;
-  const base = `https://t.me/${CONFIG.telegramUsername}`;
-  return prefill ? `${base}?text=${encodeURIComponent(prefill)}` : base;
-}
-
-function isTelegramConfigured() {
-  return Boolean(
-    CONFIG.telegramUsername &&
-    CONFIG.telegramUsername !== "SEU_USUARIO_TELEGRAM" &&
-    /^[A-Za-z0-9_]{5,32}$/.test(CONFIG.telegramUsername)
-  );
-}
-
-/** `default` mantém a resolução por canal; outras chaves vêm de CONFIG.offers. */
 function getOfferLink(offerKey = "default") {
   if (offerKey === "default") return getRefLink();
   const offer = CONFIG.offers && CONFIG.offers[offerKey];
   return offer && offer.url ? getSafeExternalUrl(offer.url) : "#";
 }
 
-function track(eventName) {
-  if (window.goatcounter && window.goatcounter.count) {
-    const channel = getChannel() || "direto";
-    const variant = getVariant();
-    window.goatcounter.count({
-      path: `${eventName}?c=${encodeURIComponent(channel)}&v=${encodeURIComponent(variant)}`,
-      event: true,
-    });
-  }
+function isTelegramConfigured() {
+  return Boolean(
+    CONFIG.telegramUsername &&
+    /^[A-Za-z0-9_]{5,32}$/.test(CONFIG.telegramUsername)
+  );
 }
 
-/** Chamar uma vez no final do <body>, depois de CONFIG estar definido. */
+function getTelegramLink(prefill) {
+  if (!isTelegramConfigured()) return null;
+  const base = `https://t.me/${CONFIG.telegramUsername}`;
+  return prefill ? `${base}?text=${encodeURIComponent(prefill)}` : base;
+}
+
+function track(eventName) {
+  if (!window.goatcounter || !window.goatcounter.count) return;
+  const safeEvent = String(eventName).replace(/[^A-Za-z0-9_/-]/g, "_").slice(0, 120);
+  const channel = getChannel() || "direto";
+  const variant = getVariant();
+  window.goatcounter.count({
+    path: `${safeEvent}?c=${encodeURIComponent(channel)}&v=${encodeURIComponent(variant)}`,
+    event: true,
+  });
+}
+
 function loadGoatCounter() {
   if (!CONFIG.goatCounterSite || !/^[a-z0-9-]{1,63}$/.test(CONFIG.goatCounterSite)) return;
-  const gc = document.createElement("script");
-  gc.async = true;
-  gc.setAttribute("data-goatcounter", "https://" + CONFIG.goatCounterSite + ".goatcounter.com/count");
-  gc.src = "https://gc.zgo.at/count.js";
-  document.head.appendChild(gc);
+  const script = document.createElement("script");
+  script.async = true;
+  script.setAttribute(
+    "data-goatcounter",
+    `https://${CONFIG.goatCounterSite}.goatcounter.com/count`
+  );
+  script.src = "https://gc.zgo.at/count.js";
+  document.head.appendChild(script);
 }
