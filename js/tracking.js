@@ -44,17 +44,15 @@ function getOfferLink(offerKey = "default") {
   return offer && offer.url ? getSafeExternalUrl(offer.url) : "#";
 }
 
-function isTelegramConfigured() {
-  return Boolean(
-    CONFIG.telegramUsername &&
-    /^[A-Za-z0-9_]{5,32}$/.test(CONFIG.telegramUsername)
-  );
+// Canal público da marca — NUNCA contato pessoal. O antigo telegramUsername
+// abria conversa direta com uma pessoa; isso saiu do ecossistema em 27/07,
+// junto com a promoção que dependia dele. Aqui só entra grupo/canal oficial.
+function isCommunityConfigured() {
+  return Boolean(CONFIG.community && CONFIG.community.url && getCommunityLink() !== "#");
 }
 
-function getTelegramLink(prefill) {
-  if (!isTelegramConfigured()) return null;
-  const base = `https://t.me/${CONFIG.telegramUsername}`;
-  return prefill ? `${base}?text=${encodeURIComponent(prefill)}` : base;
+function getCommunityLink() {
+  return getSafeExternalUrl(CONFIG.community && CONFIG.community.url);
 }
 
 function track(eventName) {
