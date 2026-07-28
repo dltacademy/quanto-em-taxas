@@ -11,6 +11,17 @@ O resultado não representa o custo total da operação. Spread, slippage, fundi
 - pessoa que opera em outra corretora e informou não possuir Binance: uma oferta contextual de conta nova;
 - cadastro não é apresentado como obrigação de depósito ou operação.
 
+## O grupo da comunidade
+
+O grupo público da marca (`CONFIG.community`) acompanha os dois ramos, porque é gratuito e não depende de elegibilidade:
+
+| Ramo | Onde aparece | Peso |
+|---|---|---|
+| Oferta de conta nova | ao lado do CTA afiliado | `btn-secondary` — discreto |
+| Educacional, sem oferta | ao lado do próximo passo | `btn-telegram` — destacado |
+
+O peso segue quem está ao lado: onde existe oferta, ela é a ação em destaque e o grupo não disputa o clique; onde não existe, o grupo é a ação da vez. Não há contato pessoal em ponto nenhum — o único canal é o grupo público.
+
 ## Estado de publicação
 
 A ferramenta permanece em `index, follow`. Este lote não altera indexação, portal, sitemap, Pages ou DNS.
