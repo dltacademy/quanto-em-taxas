@@ -70,6 +70,11 @@ const affiliateAvailable = Boolean(affiliateUrl && affiliateUrl !== "#");
 // O grupo é gratuito e não depende de elegibilidade: acompanha a oferta como
 // brinde no ramo elegível, e reforça o ramo educacional, que já tem próximo
 // passo próprio. Nunca é contato pessoal — só o canal público da marca.
+// O peso visual segue quem está ao lado. No bloco de oferta o grupo entra
+// discreto, para não disputar o clique que sustenta o projeto; no bloco
+// educacional, onde não há oferta, ele é a ação da vez e vem destacado.
+// Medido: .btn-telegram tem contraste 7.20:1 com o fundo, contra 3.00:1 do
+// .btn-primary — solto ao lado da oferta, o brinde puxaria mais o olho.
 function wireCommunity(id) {
   const el = document.getElementById(id);
   if (!el) return;
