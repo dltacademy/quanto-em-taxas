@@ -5,7 +5,7 @@ Este padrão vale para toda ferramenta pública, inclusive páginas 100% estáti
 ## Padrão obrigatório do template
 
 1. **CSP restritiva:** scripts somente locais e GoatCounter; estilos/fontes somente locais ou Google Fonts; sem objetos, frames, workers ou `base`.
-2. **Zero JavaScript inline:** inicialização fica em `js/bootstrap.js`. Não resolver erro de CSP adicionando `unsafe-inline`.
+2. **Zero JavaScript executável inline:** inicialização fica em `js/bootstrap.js`. Não resolver erro de CSP adicionando `unsafe-inline`. O único `<script>` sem `src` permitido é um data block estático com `type="application/ld+json"`; ele precisa conter JSON válido e nunca pode executar código.
 3. **Zero HTML cru com dados:** use `textContent`, `createElement` e `replaceChildren`. O flow engine não aceita `report.html`; use `extraText` ou componentes DOM explícitos.
 4. **Links externos protegidos:** `noopener noreferrer`, `referrerpolicy="no-referrer"` e `sponsored nofollow` quando afiliado.
 5. **Parâmetros e destinos sanitizados:** `?c=` aceita somente letras, números, `_` e `-`, com até 40 caracteres; variantes vêm de allowlist; destinos externos precisam usar HTTPS e configuração inválida não gera CTA.
@@ -29,15 +29,21 @@ Depois:
 - testar parâmetros inválidos e fluxos sem configuração opcional;
 - abrir cada link afiliado em sessão deslogada;
 - confirmar HTTPS obrigatório e domínio canônico;
-- manter `noindex` + `Disallow: /` até a validação de atribuição e conteúdo terminar.
+- manter a meta `noindex` até a validação de atribuição e conteúdo terminar, com `robots.txt` em `Allow: /` para o crawler conseguir ler a diretiva.
 
 ## Quando precisar de recurso externo novo
 
 Não ampliar a CSP preventivamente. Primeiro confirme que o recurso é necessário, use HTTPS, restrinja ao host exato e documente a razão. Não use `*`, `unsafe-inline` ou `unsafe-eval` para “fazer funcionar”.
 
-## Dados de indicação e Telegram
+## Dados pessoais: nenhum
 
-O site pode preparar um rascunho após consentimento, mas não persiste nem envia sozinho. Nunca pedir senha, 2FA, documento, selfie, seed phrase, chave privada/API, saldo, depósito, saque, trade ou comprovante financeiro. UID e data só entram quando realmente necessários para solicitar um benefício condicionado à indicação.
+**Ferramenta do ecossistema não coleta dado nenhum da pessoa.** Sem formulário de contato, sem identificador de conta, sem e-mail. As respostas do diagnóstico ficam no navegador e não saem dele.
+
+Nunca pedir senha, 2FA, documento, selfie, seed phrase, chave privada/API, saldo, depósito, saque, trade ou comprovante financeiro.
+
+**Nem UID.** Até 27/07/2026 existia um gate que pedia plataforma, UID e data de cadastro para liberar um benefício de indicação por contato pessoal no Telegram. A promoção foi encerrada e o fluxo removido do código (`sobrevive-ou-quebra#12`). Não reintroduzir: pedir identificador de conta cria um alvo que hoje não existe, e treina a pessoa a entregar dado de conta a quem pede — exatamente o comportamento que os golpes exploram.
+
+O único canal é o **grupo público** da marca, em `CONFIG.community`. Contato pessoal não é CTA.
 
 ## Resposta a incidente
 

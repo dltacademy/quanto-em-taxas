@@ -216,6 +216,19 @@ O único canal é o **grupo público da marca**, declarado em `CONFIG.community`
 
 O link do grupo **não** leva `sponsored` nem `nofollow`: não é afiliado. Leva `rel="noopener noreferrer"` e `referrerpolicy="no-referrer"`, exigidos pela política de segurança.
 
+### Peso visual: o grupo nunca disputa com a oferta
+
+Regra dura, e não é detalhe de estilo — a oferta é a ação que sustenta o projeto:
+
+| Situação | Classe do botão do grupo |
+|---|---|
+| Ao lado de uma oferta | `btn-secondary` — discreto |
+| Sozinho, sem oferta | `btn-telegram` — destacado |
+
+O motivo é medível: `.btn-telegram` é `#26a5e4`, mais claro e saturado que o `#1E4FD8` do `.btn-primary`. Em fundo escuro ele **puxa mais o olho que a oferta**. Um brinde que rouba o clique da conversão deixa de ser brinde e vira concorrente.
+
+Onde não há oferta, a lógica se inverte: ali o grupo é a ação da vez e deve ser óbvio.
+
 Ver `dltacademy/project-management#16` para o modelo completo de qual chamada cabe em cada ramo.
 
 ## Gate de publicação
