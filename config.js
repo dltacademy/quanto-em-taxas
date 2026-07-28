@@ -29,8 +29,16 @@ const CONFIG = {
     },
   },
 
-  // Username do Telegram para contato/chamada (sem @)
-  telegramUsername: "tiagolucer",
+  // Comunidade oficial da marca. É o próximo passo padrão quando NENHUMA
+  // oferta se aplica ao que a pessoa respondeu, e entra como brinde ao lado
+  // da oferta quando alguma se aplica. Nunca é contato pessoal.
+  community: {
+    url: "https://t.me/dltacademy",
+    label: "Entrar grátis no grupo →",
+    tag: "Grátis",
+    headline: "Continue com quem está no mesmo caminho",
+    sub: "Grupo aberto da DLT Academy: dúvidas, conteúdos novos e avisos de golpe. Sem custo e sem cadastro.",
+  },
 
   // Código de site do GoatCounter (goatcounter.com — grátis, sem cookies)
   goatCounterSite: "",

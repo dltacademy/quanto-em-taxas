@@ -67,6 +67,25 @@ function showEducationRoute(exchange) {
 const affiliateUrl = getOfferLink("default");
 const affiliateAvailable = Boolean(affiliateUrl && affiliateUrl !== "#");
 
+// O grupo é gratuito e não depende de elegibilidade: acompanha a oferta como
+// brinde no ramo elegível, e reforça o ramo educacional, que já tem próximo
+// passo próprio. Nunca é contato pessoal — só o canal público da marca.
+function wireCommunity(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!isCommunityConfigured()) {
+    el.remove();
+    return;
+  }
+  el.href = getCommunityLink();
+  if (CONFIG.community.label) el.textContent = CONFIG.community.label;
+  el.hidden = false;
+  el.addEventListener("click", () => track("clique_comunidade"));
+}
+
+wireCommunity("cta-comunidade");
+wireCommunity("cta-comunidade-educacao");
+
 function showAffiliateRoute() {
   educationBlock.hidden = true;
   if (!affiliateAvailable) {
