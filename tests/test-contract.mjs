@@ -81,7 +81,7 @@ const sandbox = {
     refByChannel: { yt: "https://example.com/ref/youtube" },
     allowedVariants: ["a", "b"],
     offers: { default: { url: "https://example.com/ref/default" } },
-    telegramUsername: "",
+    community: { url: "https://t.me/dltacademy" },
     goatCounterSite: "",
   },
   window: { location: { search: "?c=yt&v=b" } },
