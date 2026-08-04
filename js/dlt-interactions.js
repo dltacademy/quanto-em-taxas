@@ -10,6 +10,29 @@
   "use strict";
 
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fmtBRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 2 });
+
+  /*
+     Calculadora ATM de referência do kit.
+     Última verificação: 04/08/2026 · Brasil · planos Standard.
+     A conta soma os custos conhecidos da rota: conversão, IOF e tarifa própria
+     do cartão. A tarifa do operador do ATM e o DCC são variáveis e ficam no
+     disclaimer da peça. Fontes e escopo: contrato ATM_CALCULATOR.md do kit.
+  */
+  var atmTariffs = {
+    arq: { withdrawalRate: 0.01, conversionRate: 0.005 },
+    wise: { freeWithdrawals: 1, fixedFee: 20, conversionRate: 0.0078 },
+    revolut: {
+      freeWithdrawals: 5,
+      freeLimit: 1600,
+      withdrawalRate: 0.02,
+      minimumFee: 6,
+      exchangeFreeLimit: 1000,
+      exchangeRate: 0.014,
+    },
+  };
+  var atmWiseDefaultIofRate = 0.035;
+  var atmRevolutDefaultIofRate = 0.035;
 
   /* ---------- 1 · Barra de progresso de leitura -------------
      <div class="read-progress" data-progress-for=".article-body"></div> */
@@ -122,14 +145,30 @@
      <div data-filter-group>
        <button data-filter="viagem" aria-pressed="false">Vou viajar</button> …
      Cards: <a class="entry-card" data-situations="viagem custos"> …
-     Sem seleção mostra tudo. Estado guardado só na URL (#), não no storage. */
+     Sem seleção mostra tudo. O filtro ativo fica só na URL (#), não no storage. */
   function initFilters() {
     var group = document.querySelector("[data-filter-group]");
     if (!group) return;
     var buttons = Array.prototype.slice.call(group.querySelectorAll("[data-filter]"));
     var cards = Array.prototype.slice.call(document.querySelectorAll("[data-situations]"));
     var countEl = document.querySelector("[data-filter-count]");
+    var baseUrl = window.location.pathname + window.location.search;
     var active = "";
+
+    function readHash() {
+      var value = window.location.hash.replace(/^#/, "");
+      try {
+        value = decodeURIComponent(value);
+      } catch (error) {
+        value = "";
+      }
+      return buttons.some(function (button) { return button.getAttribute("data-filter") === value; }) ? value : "";
+    }
+
+    function writeHash() {
+      if (!window.history || !window.history.replaceState) return;
+      window.history.replaceState(null, "", active ? baseUrl + "#" + encodeURIComponent(active) : baseUrl);
+    }
 
     function apply() {
       var shown = 0;
@@ -146,13 +185,147 @@
     buttons.forEach(function (b) {
       b.addEventListener("click", function () {
         active = b.getAttribute("data-filter") === active ? "" : b.getAttribute("data-filter");
+        writeHash();
         apply();
       });
+    });
+    active = readHash();
+    window.addEventListener("hashchange", function () {
+      active = readHash();
+      apply();
     });
     apply();
   }
 
-  /* ---------- 6 · Progresso de guia -------------------------
+  /* ---------- 6 · Calculadora de custo conhecido do saque --
+     <form data-calc="atm"> com inputs [data-calc-value] e [data-calc-count]
+     e saídas [data-out="arq|wise|revolut"], barras [data-bar="..."],
+     veredito [data-calc-verdict]. [data-calc-wise-iof] e
+     [data-calc-revolut-iof] recebem percentuais; [data-calc-iof] continua
+     aceito como legado para alimentar os dois. Sem eles, a conta usa 3,5%
+     para conversão BRL→moeda estrangeira. O custo do ATM e DCC não entram:
+     são disclaimer da peça. */
+  function atmMonthlyCost(value, count, wiseIofRate, revolutIofRate) {
+    var totalValue = value * count;
+    var arqConversion = totalValue * atmTariffs.arq.conversionRate;
+    var arqWithdrawal = totalValue * atmTariffs.arq.withdrawalRate;
+    var wiseConversion = totalValue * atmTariffs.wise.conversionRate;
+    var wiseIof = totalValue * wiseIofRate;
+    var wiseWithdrawal = 0;
+    var revolutIof = totalValue * revolutIofRate;
+    var revolutExchange = Math.max(totalValue - atmTariffs.revolut.exchangeFreeLimit, 0) * atmTariffs.revolut.exchangeRate;
+    var revolutWithdrawal = 0;
+    var accumulated = 0;
+    for (var i = 0; i < count; i += 1) {
+      wiseWithdrawal += i < atmTariffs.wise.freeWithdrawals ? 0 : atmTariffs.wise.fixedFee;
+      var freeRevolut = i < atmTariffs.revolut.freeWithdrawals &&
+        accumulated + value <= atmTariffs.revolut.freeLimit;
+      revolutWithdrawal += freeRevolut ? 0 : Math.max(value * atmTariffs.revolut.withdrawalRate, atmTariffs.revolut.minimumFee);
+      accumulated += value;
+    }
+    return {
+      arq: {
+        total: arqConversion + arqWithdrawal,
+        conversion: arqConversion,
+        iof: 0,
+        withdrawal: arqWithdrawal,
+        detail: "conversão + IOF + spread/serviço " + fmtBRL.format(arqConversion) + " · cartão " + fmtBRL.format(arqWithdrawal),
+      },
+      wise: {
+        total: wiseConversion + wiseIof + wiseWithdrawal,
+        conversion: totalValue * atmTariffs.wise.conversionRate,
+        iof: wiseIof,
+        withdrawal: wiseWithdrawal,
+        detail: "conversão " + fmtBRL.format(totalValue * atmTariffs.wise.conversionRate) + " · IOF " + fmtBRL.format(wiseIof) + " · cartão " + fmtBRL.format(wiseWithdrawal),
+      },
+      revolut: {
+        total: revolutIof + revolutExchange + revolutWithdrawal,
+        conversion: revolutExchange,
+        iof: revolutIof,
+        withdrawal: revolutWithdrawal,
+        detail: "câmbio " + fmtBRL.format(revolutExchange) + " · IOF " + fmtBRL.format(revolutIof) + " · cartão " + fmtBRL.format(revolutWithdrawal),
+      },
+    };
+  }
+
+  function initAtmCalc() {
+    var form = document.querySelector('[data-calc="atm"]');
+    if (!form) return;
+    var valueIn = form.querySelector("[data-calc-value]");
+    var countIn = form.querySelector("[data-calc-count]");
+    var legacyIofIn = form.querySelector("[data-calc-iof]");
+    var wiseIofIn = form.querySelector("[data-calc-wise-iof]") || legacyIofIn;
+    var revolutIofIn = form.querySelector("[data-calc-revolut-iof]") || legacyIofIn;
+    if (!valueIn || !countIn) return;
+    var verdict = form.querySelector("[data-calc-verdict]");
+    var names = { arq: "ARQ", wise: "Wise", revolut: "Revolut" };
+
+    function render() {
+      var value = Math.max(Number(valueIn.value) || 0, 0);
+      var count = Math.max(Math.floor(Number(countIn.value) || 1), 1);
+      var wiseIofPercent = wiseIofIn ? Math.max(Number(wiseIofIn.value) || 0, 0) : atmWiseDefaultIofRate * 100;
+      var revolutIofPercent = revolutIofIn ? Math.max(Number(revolutIofIn.value) || 0, 0) : atmRevolutDefaultIofRate * 100;
+      var cost = atmMonthlyCost(value, count, wiseIofPercent / 100, revolutIofPercent / 100);
+      var keys = Object.keys(cost);
+      var max = Math.max.apply(null, keys.map(function (key) { return cost[key].total; }).concat(1));
+      var best = keys.reduce(function (winner, candidate) {
+        return cost[candidate].total < cost[winner].total ? candidate : winner;
+      }, "arq");
+
+      form.querySelectorAll("[data-echo-value]").forEach(function (el) {
+        el.textContent = fmtBRL.format(value);
+      });
+      form.querySelectorAll("[data-echo-count]").forEach(function (el) {
+        el.textContent = count + (count === 1 ? " saque" : " saques");
+      });
+      form.querySelectorAll("[data-echo-iof]").forEach(function (el) {
+        el.textContent = wiseIofPercent.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+      });
+      form.querySelectorAll("[data-echo-wise-iof]").forEach(function (el) {
+        el.textContent = wiseIofPercent.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+      });
+      form.querySelectorAll("[data-echo-revolut-iof]").forEach(function (el) {
+        el.textContent = revolutIofPercent.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+      });
+
+      keys.forEach(function (key) {
+        var output = form.querySelector('[data-out="' + key + '"]');
+        var bar = form.querySelector('[data-bar="' + key + '"]');
+        var row = form.querySelector('[data-row="' + key + '"]');
+        var detail = form.querySelector('[data-detail="' + key + '"]') ||
+          (output && output.querySelector("[data-calc-detail]"));
+        var total = fmtBRL.format(cost[key].total);
+        if (output) {
+          var totalEl = output.querySelector("[data-calc-total]");
+          if (totalEl) totalEl.textContent = total;
+          else output.textContent = total;
+        }
+        if (detail) detail.textContent = cost[key].detail;
+        if (bar) {
+          bar.style.width = (cost[key].total / max) * 100 + "%";
+          bar.classList.toggle("is-best", key === best);
+        }
+        if (row) row.classList.toggle("is-best", key === best);
+      });
+
+      if (verdict) {
+        var second = keys.filter(function (key) { return key !== best; })
+          .sort(function (a, b) { return cost[a].total - cost[b].total; })[0];
+        var difference = cost[second].total - cost[best].total;
+        verdict.textContent = difference <= 0
+          ? "Empate nesse cenário — decida pela conveniência."
+          : names[best] + " economiza " + fmtBRL.format(difference) + " por mês em relação ao " + names[second] + ", sem contar a tarifa variável do ATM ou o DCC.";
+      }
+    }
+
+    [valueIn, countIn, legacyIofIn, wiseIofIn, revolutIofIn].forEach(function (input) {
+      if (input) input.addEventListener("input", render);
+    });
+    form.addEventListener("submit", function (event) { event.preventDefault(); });
+    render();
+  }
+
+  /* ---------- 7 · Progresso de guia -------------------------
      <main data-guide-progress="slug">
        <span data-guide-progress-fill></span>
        <span data-guide-progress-label></span>
@@ -196,13 +369,11 @@
     update();
   }
 
-  /* ---------- 7 · Calculadoras específicas ------------------
-     O núcleo compartilhado não contém tarifas, franquias ou fórmulas de
-     produto. Uma calculadora usa o padrão visual .calc, mas sua lógica vive
-     num arquivo externo da própria peça, com fonte, data e testes. Isso evita
-     que um claim volátil seja propagado silenciosamente para todo o ecossistema. */
+  /* ---------- 8 · Calculadoras específicas ------------------
+     Outras calculadoras continuam específicas da peça. O ATM é o único
+     padrão compartilhado porque faz parte da biblioteca de interações. */
 
-  /* ---------- 8 · FAQ: um aberto por vez -------------------
+  /* ---------- 9 · FAQ: um aberto por vez -------------------
      <div class="faq" data-faq-exclusive> */
   function initFaq() {
     var wrap = document.querySelector("[data-faq-exclusive]");
@@ -216,7 +387,7 @@
     });
   }
 
-  /* ---------- 9 · Compartilhar (padrão 28) ------------------
+  /* ---------- 10 · Compartilhar (padrão 28) ------------------
      <div class="share-row" data-share>
        <button data-share-copy>Copiar link</button>
        <a data-share-telegram></a> <a data-share-whatsapp></a> <a data-share-x></a>
@@ -254,7 +425,7 @@
     });
   }
 
-  /* ---------- 10 · Copiar o resultado (padrão 29) -----------
+  /* ---------- 11 · Copiar o resultado (padrão 29) -----------
      <button data-copy-result="#resultado">Copiar como texto</button>
      Lê o texto visível do bloco apontado — nada é enviado. */
   function initCopyResult() {
@@ -283,7 +454,7 @@
 
   function boot() {
     initProgress(); initToc(); initReveal(); initCounters();
-    initFilters(); initGuideProgress(); initFaq(); initShare(); initCopyResult();
+    initFilters(); initAtmCalc(); initGuideProgress(); initFaq(); initShare(); initCopyResult();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

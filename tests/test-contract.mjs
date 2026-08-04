@@ -49,6 +49,12 @@ assert.match(index, /dlt-patterns\.css/);
 assert.match(index, /class="hero tool-head"/);
 assert.match(index, /class="card result-hero is-alert"/);
 assert.match(index, /data-copy-result="#result-card"/);
+assert.match(index, /class="bar-chart"[^>]*data-fee-chart/);
+assert.equal((index.match(/class="bar" data-month=/g) || []).length, 12, "gráfico precisa ter 12 meses");
+assert.match(index, /class="note is-warn fee-limits"/);
+assert.match(index, /class="share-row"[^>]*data-share/);
+assert.match(index, /id="download-result"/);
+assert.match(index, /class="card convert-block cta-verdict"/);
 for (const excluded of ["Spread", "slippage", "funding", "saques", "impostos", "tier"]) {
   assert.match(index, new RegExp(excluded, "i"), `custo excluído ausente: ${excluded}`);
 }
@@ -67,6 +73,8 @@ assert.match(appSource, /parseDecimalInput/);
 assert.match(appSource, /calculateFeeCosts/);
 assert.match(appSource, /validateFeeInputs/);
 assert.match(appSource, /selectFeeRoute/);
+assert.match(appSource, /renderFeeChart/);
+assert.match(appSource, /downloadFeeResult/);
 assert.equal(/monthlyCost\s*=\s*volume/.test(appSource), false, "cálculo deve ficar no modelo testável");
 assert.match(appSource, /if \(!affiliateAvailable\)[\s\S]*convertBlock\.classList\.remove\("visible"\)/);
 
