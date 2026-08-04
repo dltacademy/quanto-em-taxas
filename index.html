@@ -15,8 +15,8 @@
 <meta property="og:title" content="Quanto você paga em taxas de execução?">
 <meta property="og:description" content="Calcule o custo mensal e anual da taxa informada e identifique custos que não entram na estimativa.">
 <meta property="og:url" content="https://quanto-em-taxas.dlt.academy/">
-<meta property="og:image" content="https://quanto-em-taxas.dlt.academy/og-image.png">
-<meta property="og:image:type" content="image/png">
+<meta property="og:image" content="https://quanto-em-taxas.dlt.academy/og-image.svg">
+<meta property="og:image:type" content="image/svg+xml">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Quanto você paga em taxas de execução? — calculadora da DLT Academy">
@@ -25,13 +25,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Quanto você paga em taxas de execução?">
 <meta name="twitter:description" content="Calcule o custo mensal e anual da taxa informada e identifique custos que não entram na estimativa.">
-<meta name="twitter:image" content="https://quanto-em-taxas.dlt.academy/og-image.png">
+<meta name="twitter:image" content="https://quanto-em-taxas.dlt.academy/og-image.svg">
 <meta name="twitter:image:alt" content="Quanto você paga em taxas de execução? — calculadora da DLT Academy">
 
 <meta name="theme-color" content="#06090F">
 <link rel="icon" type="image/png" href="assets/dlt-mark.png">
 <link rel="stylesheet" href="styles-base.css">
 <link rel="stylesheet" href="styles-tool.css">
+<link rel="stylesheet" href="dlt-patterns.css">
 
 <script type="application/ld+json">
 {
@@ -44,7 +45,7 @@
   "operatingSystem": "Web",
   "inLanguage": "pt-BR",
   "isAccessibleForFree": true,
-  "image": "https://quanto-em-taxas.dlt.academy/og-image.png",
+  "image": "https://quanto-em-taxas.dlt.academy/og-image.svg",
   "offers": { "@type": "Offer", "price": 0, "priceCurrency": "BRL" },
   "publisher": { "@type": "Organization", "name": "DLT Academy", "url": "https://dlt.academy/" }
 }
@@ -59,10 +60,11 @@
 
 <main id="top">
   <div class="wrap">
-    <section class="hero">
+    <section class="hero tool-head">
       <span class="disclaimer-badge">Ferramenta educacional · não é recomendação de investimento</span>
       <h1 id="headline">Quanto você paga em taxas de execução?</h1>
-      <p class="subtitle" id="subheadline">Transforme a taxa informada no custo mensal e anual — sem confundir essa conta com o custo total da operação.</p>
+      <p class="subtitle tool-promise" id="subheadline">Transforme a taxa informada no custo mensal e anual — sem confundir essa conta com o custo total da operação.</p>
+      <ul class="tool-facts"><li>Menos de 30 segundos</li><li>Cálculo local</li><li>Sem cadastro</li></ul>
 
       <div class="card">
         <h2><span class="num">1</span>Calcule a taxa de execução</h2>
@@ -114,15 +116,16 @@
         </form>
       </div>
 
-      <div class="card" id="result-card" aria-live="polite" hidden>
-        <h2><span class="num">2</span>Estimativa da taxa de execução</h2>
+      <div class="card result-hero is-alert" id="result-card" aria-live="polite" hidden>
+        <p class="result-kicker">Sua estimativa</p>
+        <h2><span class="num">2</span>Taxa de execução anual</h2>
         <div class="result-banner bad">
           <div>
-            <div class="big-stat" id="annual-cost">R$ 0</div>
+            <div class="big-stat result-big" id="annual-cost">R$ 0</div>
             <div class="stat-label">taxa de execução estimada por ano</div>
           </div>
         </div>
-        <div class="stat-row">
+        <div class="stat-row result-stats">
           <div class="stat-box"><div class="val" id="monthly-cost">R$ 0</div><div class="label">por mês</div></div>
           <div class="stat-box"><div class="val" id="fee-display">0%</div><div class="label">taxa informada</div></div>
           <div class="stat-box"><div class="val" id="cost-per-100k">R$ 0</div><div class="label">a cada R$ 100 mil</div></div>
@@ -135,6 +138,7 @@
           <div class="finding-title">O que não entra — isto não é custo total</div>
           <div class="finding-text">Spread, slippage, funding, saques, impostos, variações de tier e outros custos específicos da plataforma ficam fora. Em futuros, o funding pode ser positivo ou negativo e variar ao longo do tempo. Confira extratos e condições vigentes.</div>
         </div>
+        <div class="result-actions"><p class="result-actions-title">Leve a estimativa para conferir no extrato</p><p>Copie o resultado e compare com as taxas efetivamente debitadas pela plataforma.</p><div class="result-actions-row"><button class="btn btn-secondary" type="button" data-copy-result="#result-card">Copiar resultado</button><a class="btn btn-secondary" href="https://dlt.academy/ferramentas/" rel="noopener noreferrer" referrerpolicy="no-referrer">Ver outras ferramentas</a></div><p class="privacy-line">O cálculo foi feito neste navegador. Nenhum valor foi enviado para a DLT Academy.</p></div>
       </div>
 
       <div class="card next-step" id="education-block" hidden>
@@ -180,5 +184,6 @@
 <script src="js/fee-model.js"></script>
 <script src="js/app.js"></script>
 <script src="js/bootstrap.js"></script>
+<script src="js/dlt-interactions.js"></script>
 </body>
 </html>

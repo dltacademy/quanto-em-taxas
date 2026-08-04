@@ -15,7 +15,7 @@ const workflows = [
 ].join("\n");
 
 const canonical = "https://quanto-em-taxas.dlt.academy/";
-const image = `${canonical}og-image.png`;
+const image = `${canonical}og-image.svg`;
 assert.match(index, /<meta name="robots" content="index, follow">/);
 assert.match(robots, /^User-agent: \*\s+Allow: \/$/m);
 assert.match(index, /<meta name="referrer" content="no-referrer">/);
@@ -45,6 +45,10 @@ for (const match of index.matchAll(/<a\b([^>]*?)href="(https?:[^"#]+)"([^>]*)>/g
 }
 
 assert.match(index, /isto não é custo total/i);
+assert.match(index, /dlt-patterns\.css/);
+assert.match(index, /class="hero tool-head"/);
+assert.match(index, /class="card result-hero is-alert"/);
+assert.match(index, /data-copy-result="#result-card"/);
 for (const excluded of ["Spread", "slippage", "funding", "saques", "impostos", "tier"]) {
   assert.match(index, new RegExp(excluded, "i"), `custo excluído ausente: ${excluded}`);
 }
