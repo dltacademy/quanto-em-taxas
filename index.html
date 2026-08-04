@@ -138,7 +138,29 @@
           <div class="finding-title">O que não entra — isto não é custo total</div>
           <div class="finding-text">Spread, slippage, funding, saques, impostos, variações de tier e outros custos específicos da plataforma ficam fora. Em futuros, o funding pode ser positivo ou negativo e variar ao longo do tempo. Confira extratos e condições vigentes.</div>
         </div>
-        <div class="result-actions"><p class="result-actions-title">Leve a estimativa para conferir no extrato</p><p>Copie o resultado e compare com as taxas efetivamente debitadas pela plataforma.</p><div class="result-actions-row"><button class="btn btn-secondary" type="button" data-copy-result="#result-card">Copiar resultado</button><a class="btn btn-secondary" href="https://dlt.academy/ferramentas/" rel="noopener noreferrer" referrerpolicy="no-referrer">Ver outras ferramentas</a></div><p class="privacy-line">O cálculo foi feito neste navegador. Nenhum valor foi enviado para a DLT Academy.</p></div>
+        <section class="fee-chart" aria-labelledby="fee-chart-title">
+          <div class="fee-chart-head">
+            <div><h3 id="fee-chart-title">Custo acumulado em 12 meses</h3><p>Azul: a taxa informada · verde: referência de 0,10%.</p></div>
+            <span class="fee-chart-source">Estimativa local</span>
+          </div>
+          <div class="bar-chart" data-fee-chart role="img" aria-label="Gráfico comparando o custo acumulado da taxa informada com uma referência de 0,10% ao longo de 12 meses">
+            <div class="bar" data-month="1" aria-label="Mês 1"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="2" aria-label="Mês 2"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="3" aria-label="Mês 3"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="4" aria-label="Mês 4"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="5" aria-label="Mês 5"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="6" aria-label="Mês 6"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="7" aria-label="Mês 7"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="8" aria-label="Mês 8"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="9" aria-label="Mês 9"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="10" aria-label="Mês 10"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="11" aria-label="Mês 11"><span class="bar-a"></span><span class="bar-b"></span></div>
+            <div class="bar" data-month="12" aria-label="Mês 12"><span class="bar-a"></span><span class="bar-b"></span></div>
+          </div>
+          <div class="bar-axis"><span>mês 1</span><span>mês 6</span><span>mês 12</span></div>
+        </section>
+        <div class="note is-warn fee-limits"><p>Limites da leitura</p><p>A conta usa apenas volume mensal × taxa informada. Não estima preço, liquidez, slippage, funding, impostos, tarifas de saque, tiers, cashback ou mudanças futuras da plataforma. Use-a para dimensionar e depois confira o extrato.</p></div>
+        <div class="result-actions"><p class="result-actions-title">Leve a estimativa para conferir no extrato</p><p>Copie ou baixe o resultado e compare com as taxas efetivamente debitadas pela plataforma.</p><div class="result-actions-row"><button class="btn btn-secondary" type="button" data-copy-result="#result-card">Copiar resultado</button><button class="btn btn-secondary" type="button" id="download-result">Baixar texto</button><a class="btn btn-secondary" href="https://dlt.academy/ferramentas/" rel="noopener noreferrer" referrerpolicy="no-referrer">Ver outras ferramentas</a></div><p class="privacy-line">O cálculo foi feito neste navegador. Nenhum valor foi enviado para a DLT Academy.</p></div>
       </div>
 
       <div class="card next-step" id="education-block" hidden>
@@ -151,7 +173,7 @@
         </div>
       </div>
 
-      <div class="card convert-block" id="convert-block">
+      <div class="card convert-block cta-verdict" id="convert-block" data-tone="warn">
         <span class="tag s2">Opção compatível com seu caso</span>
         <div class="convert-headline">Compare as condições de uma conta nova na Binance</div>
         <div class="convert-sub">Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.</div>
@@ -166,6 +188,8 @@
         </div>
         <p class="affiliate-disclosure">Este é um link de afiliado. A DLT Academy pode receber comissão se uma conta elegível for criada e utilizada. As condições exibidas pela Binance no cadastro prevalecem.</p>
       </div>
+
+      <section class="share-row" data-share aria-label="Compartilhar a ferramenta"><p>Uma conta simples ajuda a separar taxa de execução e custo total.</p><div class="share-actions"><button type="button" data-share-copy>Copiar link</button><a data-share-telegram target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Telegram</a><a data-share-whatsapp target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">WhatsApp</a></div></section>
     </section>
   </div>
 </main>
