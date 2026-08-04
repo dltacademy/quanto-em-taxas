@@ -28,6 +28,66 @@
   margin-top: 16px;
 }
 
+.fee-chart {
+  margin-top: 22px;
+  padding: 20px 0 2px;
+  border-top: 1px solid var(--border);
+}
+
+.fee-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.fee-chart h3 {
+  font-family: var(--font-head);
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.fee-chart p {
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.fee-chart-source {
+  color: var(--text-faint);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.fee-chart .bar-chart {
+  min-height: 150px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.fee-chart .bar {
+  min-width: 12px;
+}
+
+.fee-chart .bar > span {
+  width: 100%;
+  min-height: 0;
+}
+
+.fee-chart .bar-a {
+  background: rgba(74, 141, 248, 0.7);
+}
+
+.fee-chart .bar-b {
+  background: rgba(110, 231, 168, 0.65);
+}
+
+.fee-limits {
+  margin-top: 22px;
+}
+
 .next-step {
   border-color: rgba(110, 231, 168, 0.28);
 }
@@ -40,5 +100,14 @@
 
   .result-banner {
     align-items: flex-start;
+  }
+
+  .fee-chart-head {
+    display: block;
+  }
+
+  .fee-chart-source {
+    display: inline-block;
+    margin-top: 8px;
   }
 }

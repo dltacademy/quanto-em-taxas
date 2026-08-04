@@ -102,6 +102,27 @@ function showAffiliateRoute() {
   track("roteador_resultado_binance");
 }
 
+function renderFeeChart(volume, feeRate) {
+  const chart = document.querySelector("[data-fee-chart]");
+  if (!chart) return;
+  const monthlyCost = calculateFeeCosts(volume, feeRate).monthlyCost;
+  const referenceMonthly = calculateFeeCosts(volume, 0.1).monthlyCost;
+  const maxCost = Math.max(monthlyCost * 12, referenceMonthly * 12, 1);
+  const bars = Array.from(chart.querySelectorAll(".bar"));
+  bars.forEach((bar) => {
+    const month = Number(bar.getAttribute("data-month"));
+    const mine = monthlyCost * month;
+    const reference = referenceMonthly * month;
+    const mineHeight = Math.max(mine > 0 ? (mine / maxCost) * 100 : 0, 1.5);
+    const referenceHeight = Math.max(reference > 0 ? (reference / maxCost) * 100 : 0, 1.5);
+    const mineBar = bar.querySelector(".bar-a");
+    const referenceBar = bar.querySelector(".bar-b");
+    mineBar.style.height = `${mineHeight}%`;
+    referenceBar.style.height = `${referenceHeight}%`;
+    bar.setAttribute("aria-label", `Mês ${month}: ${formatMoney(mine)} na taxa informada; ${formatMoney(reference)} na referência de 0,10%`);
+  });
+}
+
 function renderResult(exchange, market, volume, feeRate) {
   const result = calculateFeeCosts(volume, feeRate);
   document.getElementById("annual-cost").textContent = formatMoney(result.annualCost);
@@ -110,10 +131,26 @@ function renderResult(exchange, market, volume, feeRate) {
   document.getElementById("cost-per-100k").textContent = formatMoney(result.costPer100k);
   document.getElementById("result-explanation").textContent =
     `Em ${getMarketLabel(market)}, com ${formatMoney(volume)} de volume executado por mês e taxa informada de ${formatPercent(feeRate)} por execução na ${EXCHANGE_NAMES[exchange]}, a estimativa da taxa de execução é ${formatMoney(result.monthlyCost)} por mês.`;
+  renderFeeChart(volume, feeRate);
 
   resultCard.hidden = false;
   resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   track("resultado_gerado");
+}
+
+function downloadFeeResult() {
+  const text = document.getElementById("result-card").innerText.replace(/\n{3,}/g, "\n\n").trim();
+  const content = `${text}\n\n${window.location.href}\nConteúdo educacional. Não é recomendação de investimento.`;
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "quanto-em-taxas-resultado.txt";
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 exchangeInput.addEventListener("change", updateBinanceQuestion);
@@ -152,5 +189,7 @@ form.addEventListener("submit", (event) => {
     showEducationRoute(exchange);
   }
 });
+
+document.getElementById("download-result").addEventListener("click", downloadFeeResult);
 
 updateBinanceQuestion();
