@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Quanto você paga em taxas de execução? — DLT Academy</title>
+  <desc id="desc">Calculadora gratuita de custo mensal e anual de taxas.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06090F"/><stop offset="1" stop-color="#0E2148"/></linearGradient><radialGradient id="glow" cx="82%" cy="20%" r="55%"><stop stop-color="#1E4FD8" stop-opacity=".5"/><stop offset="1" stop-color="#1E4FD8" stop-opacity="0"/></radialGradient></defs>
+  <rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#glow)"/>
+  <g transform="translate(900 132)" fill="none" stroke="#8FBBFF" stroke-width="13" stroke-linecap="round"><path d="M0 270V150M76 270V70M152 270V112M228 270V0"/><path d="M-18 292h270" stroke="#4A8DF8" stroke-opacity=".45"/></g>
+  <text x="84" y="112" fill="#8FBBFF" font-family="Sora,Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="3">FERRAMENTA GRATUITA</text>
+  <text x="84" y="225" fill="#E8EDF7" font-family="Sora,Arial,sans-serif" font-size="58" font-weight="800">Quanto você paga</text>
+  <text x="84" y="298" fill="#E8EDF7" font-family="Sora,Arial,sans-serif" font-size="58" font-weight="800">em taxas?</text>
+  <text x="84" y="377" fill="#9AA7C2" font-family="Manrope,Arial,sans-serif" font-size="29">Custo mensal e anual em menos de 30 segundos</text>
+  <text x="84" y="500" fill="#6EE7A8" font-family="Manrope,Arial,sans-serif" font-size="24">Sem cadastro · cálculo local · custos excluídos visíveis</text>
+  <text x="84" y="565" fill="#4A8DF8" font-family="Sora,Arial,sans-serif" font-size="26" font-weight="700">DLT ACADEMY</text>
+</svg>
