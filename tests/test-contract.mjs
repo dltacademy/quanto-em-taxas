@@ -65,7 +65,7 @@ assert.ok(
   marketBlock[0].indexOf('value=""') < marketBlock[0].indexOf('value="futures"'),
   "futuros não pode ser opção inicial implícita"
 );
-assert.match(marketBlock[0], /Selecione conscientemente/);
+assert.match(marketBlock[0], /Escolha uma opção/);
 
 assert.match(index, /rel="sponsored nofollow noopener noreferrer"/);
 assert.match(index, /referrerpolicy="no-referrer"/);
