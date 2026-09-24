@@ -111,3 +111,6 @@
     margin-top: 8px;
   }
 }
+
+/* O display dos botões sobrescreve o atributo hidden; os CTAs trocados por rota dependem dele. */
+.btn[hidden]{display:none}
