@@ -91,15 +91,31 @@ function wireCommunity(id) {
 wireCommunity("cta-comunidade");
 wireCommunity("cta-comunidade-educacao");
 
-function showAffiliateRoute() {
+const futuresGuide = document.getElementById("cta-guia-futuros");
+const communityCta = document.getElementById("cta-comunidade");
+if (futuresGuide) futuresGuide.addEventListener("click", () => track("clique_guia_futuros"));
+
+// Quem opera futuros em outra corretora é o perfil que mais pesa para a
+// Binance: o texto troca para migração, e o guia de migração ocupa o lugar do
+// grupo como ação secundária. O cashback é bônus, nunca a promessa principal.
+function showAffiliateRoute(market) {
   educationBlock.hidden = true;
   if (!affiliateAvailable) {
     convertBlock.classList.remove("visible");
     track("roteador_resultado_sem_oferta");
     return;
   }
+  const isFutures = market === "futures";
+  document.getElementById("convert-headline").textContent = isFutures
+    ? "Já opera futuros? Tenha a Binance como segunda corretora"
+    : "Compare as condições de uma conta nova na Binance";
+  document.getElementById("convert-sub").textContent = isFutures
+    ? "Você opera futuros em outra corretora e ainda não tem Binance. Abrindo pelo link, a conta nova tem cashback vitalício em parte das taxas. O guia mostra como migrar o saldo sem erro de rede e configurar o risco antes da primeira ordem."
+    : "Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.";
+  if (futuresGuide) futuresGuide.hidden = !isFutures;
+  if (communityCta) communityCta.hidden = isFutures || !isCommunityConfigured();
   convertBlock.classList.add("visible");
-  track("roteador_resultado_binance");
+  track(isFutures ? "roteador_resultado_binance_futuros" : "roteador_resultado_binance");
 }
 
 function renderFeeChart(volume, feeRate) {
@@ -184,7 +200,7 @@ form.addEventListener("submit", (event) => {
   renderResult(exchange, market, volume, feeRate);
 
   if (selectFeeRoute({ exchange, hasBinance }) === "affiliate") {
-    showAffiliateRoute();
+    showAffiliateRoute(market);
   } else {
     showEducationRoute(exchange);
   }
