@@ -96,9 +96,17 @@ const communityCta = document.getElementById("cta-comunidade");
 if (futuresGuide) futuresGuide.addEventListener("click", () => track("clique_guia_futuros"));
 
 // Quem opera futuros em outra corretora é o perfil que mais pesa para a
-// Binance: o texto troca para migração, e o guia de migração ocupa o lugar do
-// grupo como ação secundária. O cashback é bônus, nunca a promessa principal.
-function showAffiliateRoute(market) {
+// Binance: o texto troca para migração e usa a taxa anual que a própria pessoa
+// acabou de calcular. Não há percentual nem valor de cashback: a promessa é só
+// "cashback vitalício nas taxas". O guia de migração ocupa o lugar do grupo
+// como ação secundária.
+const CTA_DEFAULT = {
+  headline: "Compare as condições de uma conta nova na Binance",
+  sub: "Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.",
+  label: "Ver condições da Binance",
+};
+
+function showAffiliateRoute(market, annualCost) {
   educationBlock.hidden = true;
   if (!affiliateAvailable) {
     convertBlock.classList.remove("visible");
@@ -108,10 +116,13 @@ function showAffiliateRoute(market) {
   const isFutures = market === "futures";
   document.getElementById("convert-headline").textContent = isFutures
     ? "Já opera futuros? Tenha a Binance como segunda corretora"
-    : "Compare as condições de uma conta nova na Binance";
+    : CTA_DEFAULT.headline;
   document.getElementById("convert-sub").textContent = isFutures
-    ? "Você opera futuros em outra corretora e ainda não tem Binance. Abrindo pelo link, a conta nova tem cashback vitalício em parte das taxas. O guia mostra como migrar o saldo sem erro de rede e configurar o risco antes da primeira ordem."
-    : "Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.";
+    ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Abrindo a Binance pelo link, parte das taxas da conta volta como cashback vitalício. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
+    : CTA_DEFAULT.sub;
+  affiliateCta.textContent = isFutures ? "Abrir a Binance com cashback vitalício" : CTA_DEFAULT.label;
+  const activeNote = document.getElementById("offer-active");
+  if (activeNote) activeNote.hidden = !isFutures;
   if (futuresGuide) futuresGuide.hidden = !isFutures;
   if (communityCta) communityCta.hidden = isFutures || !isCommunityConfigured();
   convertBlock.classList.add("visible");
@@ -200,7 +211,7 @@ form.addEventListener("submit", (event) => {
   renderResult(exchange, market, volume, feeRate);
 
   if (selectFeeRoute({ exchange, hasBinance }) === "affiliate") {
-    showAffiliateRoute(market);
+    showAffiliateRoute(market, calculateFeeCosts(volume, feeRate).annualCost);
   } else {
     showEducationRoute(exchange);
   }
