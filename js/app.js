@@ -99,7 +99,7 @@ if (futuresGuide) futuresGuide.addEventListener("click", () => track("clique_gui
 // Binance: o texto troca para migração e usa a taxa anual que a própria pessoa
 // acabou de calcular. Não há percentual nem valor de cashback: a promessa é só
 // "cashback vitalício nas taxas". O guia de migração ocupa o lugar do grupo
-// como ação secundária.
+// como ação secundária. O cashback vitalício é o argumento central do bloco.
 const CTA_DEFAULT = {
   headline: "Compare as condições de uma conta nova na Binance",
   sub: "Você informou que opera em outra corretora e ainda não possui Binance. Confira a oferta e compare as condições atuais antes de decidir.",
@@ -115,10 +115,10 @@ function showAffiliateRoute(market, annualCost) {
   }
   const isFutures = market === "futures";
   document.getElementById("convert-headline").textContent = isFutures
-    ? "Já opera futuros? Tenha a Binance como segunda corretora"
+    ? "Você paga taxa em toda ordem. Na Binance, parte dela volta para você, para sempre"
     : CTA_DEFAULT.headline;
   document.getElementById("convert-sub").textContent = isFutures
-    ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Abrindo a Binance pelo link, parte das taxas da conta volta como cashback vitalício. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
+    ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Numa conta nova aberta pelo link, parte dessas taxas volta como cashback vitalício, em toda ordem. O link só vale na abertura da conta. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
     : CTA_DEFAULT.sub;
   affiliateCta.textContent = isFutures ? "Abrir a Binance com cashback vitalício" : CTA_DEFAULT.label;
   const activeNote = document.getElementById("offer-active");
