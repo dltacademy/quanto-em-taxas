@@ -115,7 +115,7 @@ function showAffiliateRoute(market, annualCost) {
   }
   const isFutures = market === "futures";
   document.getElementById("convert-headline").textContent = isFutures
-    ? "Você paga taxa em toda ordem. Na Binance, parte dela volta para você, para sempre"
+    ? "Você paga taxa em toda ordem. Numa conta nova da Binance, parte dela volta, para sempre"
     : CTA_DEFAULT.headline;
   document.getElementById("convert-sub").textContent = isFutures
     ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Numa conta nova aberta pelo link, parte dessas taxas volta como cashback vitalício, em toda ordem. O link só vale na abertura da conta. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
