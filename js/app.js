@@ -118,7 +118,7 @@ function showAffiliateRoute(market, annualCost) {
     ? "Você paga taxa em toda ordem. Numa conta nova da Binance, parte dela volta, para sempre"
     : CTA_DEFAULT.headline;
   document.getElementById("convert-sub").textContent = isFutures
-    ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Numa conta nova aberta pelo link, parte dessas taxas volta como cashback vitalício, em toda ordem. O cashback cresce com o volume e o número de pessoas que se cadastram pelo link, então não prometemos um número. O link só vale na abertura da conta. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
+    ? `Pelos seus números, a taxa de execução em futuros soma cerca de ${formatMoney(annualCost)} por ano. Numa conta nova aberta pelo link, parte dessas taxas volta como cashback vitalício, em toda ordem. O cashback pode aumentar conforme mais gente se cadastra pelo link e o volume cresce, então não prometemos um número. O link só vale na abertura da conta. O guia mostra a migração passo a passo, com a rede certa e o risco configurado.`
     : CTA_DEFAULT.sub;
   affiliateCta.textContent = isFutures ? "Abrir a Binance com cashback vitalício" : CTA_DEFAULT.label;
   const activeNote = document.getElementById("offer-active");
