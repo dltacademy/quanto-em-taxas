@@ -180,6 +180,163 @@ function downloadFeeResult() {
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
+// Importação de extrato: o arquivo é lido e somado aqui, no navegador. Só os
+// dois números finais (volume mensal e taxa efetiva) vão para o formulário.
+const csvFile = document.getElementById("csv-file");
+const csvFx = document.getElementById("csv-fx");
+const csvMonths = document.getElementById("csv-months");
+const csvMapping = document.getElementById("csv-mapping");
+const csvError = document.getElementById("csv-error");
+const csvSummary = document.getElementById("csv-summary");
+const csvApply = document.getElementById("csv-apply");
+const csvSelects = {
+  notional: document.getElementById("csv-col-notional"),
+  fee: document.getElementById("csv-col-fee"),
+  date: document.getElementById("csv-col-date"),
+};
+const csvState = { rows: [], detected: {}, monthsTouched: false };
+
+const CSV_MESSAGES = {
+  invalid_type: "Escolha um arquivo com extensão .csv.",
+  too_large: "O arquivo passa de 5 MB. Exporte um período menor, por exemplo um mês.",
+  too_many_rows: "O arquivo tem mais de 20 mil linhas. Exporte um período menor, por exemplo um mês.",
+  too_many_columns: "O arquivo tem colunas demais para esta ferramenta.",
+  read_error: "Não foi possível ler o arquivo. Exporte de novo e tente outra vez.",
+  empty: "O arquivo está vazio.",
+  missing_columns: "Não achei as colunas de valor negociado e de taxa. Escolha-as nas listas abaixo.",
+  no_rows: "Nenhuma operação utilizável com essas colunas. Confira as listas abaixo.",
+  invalid_fx: "Informe a cotação do dólar em reais.",
+  invalid_months: "Informe quantos meses o extrato cobre.",
+  invalid_volume: "O volume calculado passa do limite da ferramenta.",
+  invalid_rate: "A taxa efetiva passou de 10%: provavelmente a coluna de valor está errada. Escolha outra nas listas.",
+};
+
+function showCsvError(code) {
+  csvError.textContent = CSV_MESSAGES[code] || CSV_MESSAGES.read_error;
+  csvError.hidden = false;
+  csvSummary.hidden = true;
+  csvApply.hidden = true;
+}
+
+function fillCsvSelect(select, headers, selected) {
+  select.replaceChildren();
+  const none = document.createElement("option");
+  none.value = "";
+  none.textContent = "(nenhuma)";
+  select.appendChild(none);
+  headers.forEach((header) => {
+    const option = document.createElement("option");
+    option.value = header;
+    option.textContent = header;
+    select.appendChild(option);
+  });
+  select.value = selected || "";
+}
+
+function currentCsvMapping() {
+  return {
+    ...csvState.detected,
+    notional: csvSelects.notional.value || null,
+    fee: csvSelects.fee.value || null,
+    date: csvSelects.date.value || null,
+  };
+}
+
+function pluralize(count, singular, plural) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function formatAuditNumber(value) {
+  return new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(value);
+}
+
+function refreshCsvSummary() {
+  if (!csvState.rows.length) return;
+  csvError.hidden = true;
+  const summary = summarizeFeeAudit(csvState.rows, currentCsvMapping());
+  if (summary.error) {
+    showCsvError(summary.error);
+    return;
+  }
+  if (!csvState.monthsTouched) {
+    const months = defaultAuditMonths(summary);
+    csvMonths.value = months ? String(months) : "";
+  }
+  const parts = [
+    pluralize(summary.rowsUsed, "operação lida", "operações lidas"),
+    `volume de ${formatAuditNumber(summary.volume)}`,
+    `taxas de ${formatAuditNumber(summary.fee)}`,
+    `taxa efetiva de ${formatPercent(summary.feeRatePct)}`,
+  ];
+  if (summary.periodDays) parts.push(`${pluralize(summary.periodDays, "dia", "dias")} no extrato`);
+  let text = `${parts.join(" · ")}. Valores na moeda do extrato (normalmente USDT).`;
+  if (summary.rowsOtherFeeAsset) {
+    text += ` ${pluralize(summary.rowsOtherFeeAsset, "operação com taxa paga", "operações com taxa paga")} em outra moeda (como BNB) ficou${summary.rowsOtherFeeAsset === 1 ? "" : "ram"} de fora.`;
+  }
+  if (summary.rowsSkipped) text += ` ${pluralize(summary.rowsSkipped, "linha sem valor ou taxa foi ignorada", "linhas sem valor ou taxa foram ignoradas")}.`;
+  if (summary.periodDays && summary.periodDays < 7) {
+    text += " O período é curto: a projeção mensal pode ficar longe da sua média real.";
+  }
+  csvSummary.textContent = text;
+  csvSummary.hidden = false;
+  csvApply.hidden = false;
+}
+
+function loadCsvText(text) {
+  const parsed = parseCSV(text);
+  if (parsed.error) {
+    showCsvError(parsed.error);
+    return;
+  }
+  if (!parsed.headers.length || !parsed.rows.length) {
+    showCsvError("empty");
+    return;
+  }
+  csvState.rows = parsed.rows;
+  csvState.detected = detectAuditColumns(parsed.headers);
+  csvState.monthsTouched = false;
+  fillCsvSelect(csvSelects.notional, parsed.headers, csvState.detected.notional);
+  fillCsvSelect(csvSelects.fee, parsed.headers, csvState.detected.fee);
+  fillCsvSelect(csvSelects.date, parsed.headers, csvState.detected.date);
+  csvMapping.hidden = false;
+  refreshCsvSummary();
+}
+
+function applyCsvToForm() {
+  const summary = summarizeFeeAudit(csvState.rows, currentCsvMapping());
+  const values = auditToFormValues(summary, {
+    fxRate: parseDecimalInput(csvFx.value),
+    months: parseDecimalInput(csvMonths.value),
+  });
+  if (values.error) {
+    showCsvError(values.error);
+    return;
+  }
+  csvError.hidden = true;
+  document.getElementById("monthly-volume").value = String(values.monthlyVolume);
+  document.getElementById("fee-rate").value = String(values.feeRate);
+  document.getElementById("market").value = "futures";
+  csvSummary.textContent = values.suspicious
+    ? "Campos preenchidos, mas a taxa efetiva está fora do comum em futuros. Confira as colunas escolhidas antes de calcular."
+    : "Campos preenchidos com o seu extrato. Escolha onde você opera e se já tem Binance, depois calcule.";
+  csvSummary.hidden = false;
+  track("extrato_importado");
+  exchangeInput.focus();
+}
+
+csvFile.addEventListener("change", () => {
+  const file = csvFile.files && csvFile.files[0];
+  if (!file) return;
+  csvState.rows = [];
+  csvMapping.hidden = true;
+  readCSVFile(file, loadCsvText, showCsvError);
+});
+Object.values(csvSelects).forEach((select) => select.addEventListener("change", refreshCsvSummary));
+csvMonths.addEventListener("input", () => {
+  csvState.monthsTouched = true;
+});
+csvApply.addEventListener("click", applyCsvToForm);
+
 exchangeInput.addEventListener("change", updateBinanceQuestion);
 
 if (affiliateAvailable) {

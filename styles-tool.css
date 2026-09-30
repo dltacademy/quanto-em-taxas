@@ -115,3 +115,39 @@
 /* O display dos botões sobrescreve o atributo hidden; os CTAs trocados por rota dependem dele. */
 .btn[hidden]{display:none}
 .offer-list li[hidden]{display:none}
+
+.csv-import {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 0 0 18px;
+  padding: 0 16px;
+}
+
+.csv-import > summary {
+  color: var(--text);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  min-height: 44px;
+  padding: 12px 0;
+}
+
+.csv-import[open] > summary {
+  margin-bottom: 4px;
+}
+
+.csv-import .btn {
+  margin: 4px 0 16px;
+}
+
+.csv-summary {
+  background: rgba(30, 79, 216, 0.1);
+  border: 1px solid rgba(74, 141, 248, 0.32);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+}
