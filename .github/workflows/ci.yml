@@ -23,5 +23,7 @@ jobs:
           find js -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Fee model
         run: node tests/test-fee-model.mjs
+      - name: Fee audit
+        run: node tests/test-fee-audit.mjs
       - name: Technical contract
         run: node tests/test-contract.mjs
