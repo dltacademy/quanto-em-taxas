@@ -25,3 +25,7 @@ jobs:
         run: node tests/test-fee-model.mjs
       - name: Technical contract
         run: node tests/test-contract.mjs
+      - name: Montar e conferir _site
+        run: bash scripts/montar_site.sh
+      - name: Privacidade e publicação
+        run: node tests/test-privacidade.mjs

@@ -45,7 +45,7 @@ Um público menor, mas com patrimônio, exposição e problema concreto, pode se
 6. **Dar limites.** Informar condições, região, KYC, produto coberto, prazo, custos, riscos e o que não foi verificado.
 7. **Mostrar alternativas com discrição.** Alternativas compatíveis ficam em segundo nível (`<details>` ou links secundários), nunca como mural de corretoras.
 8. **Declarar afiliação.** Disclosure visível perto do CTA. Não esconder comissão nem sugerir neutralidade inexistente.
-9. **Medir a decisão.** Canal + variante + respostas mínimas + oferta recomendada + clique. Nunca enviar dados pessoais ou CSV ao tracking.
+9. **Medir a decisão sem levar a resposta.** Canal + variante + etapa concluída + clique por oferta. Respostas, resultado e oferta recomendada ficam no navegador. Nunca enviar dados pessoais ou CSV ao tracking.
 
 ## Teste de naturalidade
 
@@ -183,24 +183,18 @@ Não encurtar para “cashback em todas as taxas”, não informar percentual se
 
 Use primeiro o que já responde à decisão: links/campanhas do programa, painel afiliado, Google e GitHub. Parâmetros `?c=`/`?v=` continuam úteis para separar origem e variante, mas não crie uma nova camada de analytics sem uma pergunta concreta que as fontes existentes não respondam.
 
+**Regra do nome do evento:** string fixa no código, ou com a identidade do link ou oferta que a pessoa clicou (`clique_oferta_<offerKey>_principal`). Nunca um valor digitado ou escolhido pela pessoa, nem um resultado derivado das respostas: `<campo>_<valor>`, `roteador_resultado_<offerKey>`, número de passo e o caminho escolhido num fluxo de psicologia e proteção revelam a resposta e ficam fora. `tests/test-privacidade.mjs` reprova `track()` com variável que não seja `offerKey` ou `linkId`.
+
 Eventos recomendados:
 
 ```text
+flow_iniciado
+flow_passo
 resultado_gerado
-roteador_resposta_<campo>_<valor>
-roteador_resultado_<offerKey>
+roteador_resultado
 clique_oferta_<offerKey>_principal
 clique_oferta_<offerKey>_alternativa
-```
-
-Em fluxos de psicologia e proteção, também pode ser útil medir de forma não sensível:
-
-```text
-caminho_decisao_nao_agir
-caminho_decisao_reduzir
-caminho_decisao_estudar_protecao
-protecao_elegivel_sim
-protecao_elegivel_nao
+clique_comunidade
 ```
 
 Cada evento recebe `?c=<canal>&v=<variante>` automaticamente pelo `tracking.js`. Não registrar nome, e-mail, carteira, conteúdo de CSV, valor exato de patrimônio nem respostas sensíveis.
@@ -247,7 +241,7 @@ Toda ferramenta nasce com indexação bloqueada. Antes de trocar para `index, fo
 - [ ] CTA tem `rel="sponsored nofollow noopener noreferrer"` e `referrerpolicy="no-referrer"`.
 - [ ] Disclosure fica visível próximo da recomendação.
 - [ ] Telegram placeholder não gera link quebrado.
-- [ ] Tracking distingue canal, variante e oferta.
+- [ ] Tracking distingue canal, variante e oferta clicada; nenhum nome de evento carrega resposta ou resultado.
 - [ ] Desktop e mobile sem overflow ou erro de console.
 - [ ] `python3 security_check.py .` passa; CSP não contém `unsafe-inline`/`unsafe-eval`.
 - [ ] Uploads e parâmetros respeitam o `SECURITY_BASELINE.md`; nenhum dado sensível entra no tracking ou armazenamento.

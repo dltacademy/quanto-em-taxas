@@ -66,6 +66,15 @@ function track(eventName) {
   });
 }
 
+/**
+ * Chamar uma vez no final do <body>, depois de CONFIG estar definido.
+ *
+ * Esta ferramenta não liga analytics (goatCounterSite vazio) e por isso não
+ * traz o script. Para ligar: copiar js/vendor/goatcounter-count.js do
+ * template do ferramenta-kit (servido pelo próprio site, nunca de gc.zgo.at)
+ * e liberar o host exato da conta (https://<site>.goatcounter.com) em
+ * connect-src e img-src da CSP — ver SECURITY_BASELINE.md do kit.
+ */
 function loadGoatCounter() {
   if (!CONFIG.goatCounterSite || !/^[a-z0-9-]{1,63}$/.test(CONFIG.goatCounterSite)) return;
   const script = document.createElement("script");
@@ -74,6 +83,6 @@ function loadGoatCounter() {
     "data-goatcounter",
     `https://${CONFIG.goatCounterSite}.goatcounter.com/count`
   );
-  script.src = "https://gc.zgo.at/count.js";
+  script.src = "js/vendor/goatcounter-count.js";
   document.head.appendChild(script);
 }
