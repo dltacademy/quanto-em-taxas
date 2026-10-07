@@ -53,7 +53,8 @@ function showEducationRoute(exchange) {
     text.textContent = "Como você ainda não opera, o próximo passo é entender cadastro, segurança, taxa, spread e riscos antes de escolher um mercado.";
     link.textContent = "Ver guia de conta segura";
     link.href = "https://dlt.academy/guias/conta-binance/";
-    track("roteador_resultado_educacao");
+    // Evento fixo: o nome nunca revela o ramo a que as respostas levaram.
+    track("roteador_resultado");
     return;
   }
 
@@ -61,7 +62,7 @@ function showEducationRoute(exchange) {
   text.textContent = "Você informou que já possui Binance ou opera nela. Por isso não mostramos uma oferta de conta nova. Compare a taxa estimada com extratos e custos que ficaram fora do cálculo.";
   link.textContent = "Abrir Sobrevive ou Quebra?";
   link.href = "https://sobrevive-ou-quebra.dlt.academy/";
-  track("roteador_resultado_sem_oferta");
+  track("roteador_resultado");
 }
 
 const affiliateUrl = getOfferLink("default");
@@ -110,7 +111,7 @@ function showAffiliateRoute(market, annualCost) {
   educationBlock.hidden = true;
   if (!affiliateAvailable) {
     convertBlock.classList.remove("visible");
-    track("roteador_resultado_sem_oferta");
+    track("roteador_resultado");
     return;
   }
   const isFutures = market === "futures";
@@ -126,7 +127,7 @@ function showAffiliateRoute(market, annualCost) {
   if (futuresGuide) futuresGuide.hidden = !isFutures;
   if (communityCta) communityCta.hidden = isFutures || !isCommunityConfigured();
   convertBlock.classList.add("visible");
-  track(isFutures ? "roteador_resultado_binance_futuros" : "roteador_resultado_binance");
+  track("roteador_resultado");
 }
 
 function renderFeeChart(volume, feeRate) {
@@ -167,7 +168,9 @@ function renderResult(exchange, market, volume, feeRate) {
 
 function downloadFeeResult() {
   const text = document.getElementById("result-card").innerText.replace(/\n{3,}/g, "\n\n").trim();
-  const content = `${text}\n\n${window.location.href}\nConteúdo educacional. Não é recomendação de investimento.`;
+  // Só origem + caminho: canal, variante e outros parâmetros não vão no arquivo.
+  const pageUrl = window.location.origin + window.location.pathname;
+  const content = `${text}\n\n${pageUrl}\nConteúdo educacional. Não é recomendação de investimento.`;
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
