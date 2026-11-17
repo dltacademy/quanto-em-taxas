@@ -47,7 +47,8 @@ for (const match of index.matchAll(/<a\b([^>]*?)href="(https?:[^"#]+)"([^>]*)>/g
 assert.match(index, /isto não é custo total/i);
 assert.match(index, /dlt-patterns\.css/);
 assert.match(index, /class="hero tool-head"/);
-assert.match(index, /class="card result-hero is-alert"/);
+assert.match(index, /class="card result-hero"/);
+assert.match(index, /class="result-banner" data-grade="4"/);
 assert.match(index, /data-copy-result="#result-card"/);
 assert.match(index, /class="bar-chart"[^>]*data-fee-chart/);
 assert.equal((index.match(/class="bar" data-month=/g) || []).length, 12, "gráfico precisa ter 12 meses");

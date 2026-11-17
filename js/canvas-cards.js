@@ -154,7 +154,7 @@ function drawCouponBox(ctx, width, height, coupon) {
   ctx.textAlign = "center";
   ctx.font = `700 ${Math.round(width * 0.028)}px system-ui, sans-serif`;
   ctx.fillStyle = "#4A8DF8";
-  ctx.fillText("🎁 " + (coupon.label || "PRESENTE POR RESPONDER"), cx, cy);
+  ctx.fillText((coupon.label || "PRESENTE POR RESPONDER"), cx, cy);
 
   cy += boxH * 0.32;
   ctx.font = `800 ${Math.round(width * 0.032)}px system-ui, sans-serif`;
