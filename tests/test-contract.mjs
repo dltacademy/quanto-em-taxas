@@ -77,6 +77,11 @@ assert.match(appSource, /selectFeeRoute/);
 assert.match(appSource, /renderFeeChart/);
 assert.match(appSource, /downloadFeeResult/);
 assert.equal(/monthlyCost\s*=\s*volume/.test(appSource), false, "cálculo deve ficar no modelo testável");
+// Motivo: escolher Binance gravava "Sim" no campo oculto; ao trocar para outra
+// corretora a pergunta reaparecia já respondida e a rota de afiliado sumia.
+// O submit deriva hasBinance = "yes" para Binance; o campo só recebe o que a pessoa escolhe.
+assert.equal(/hasBinanceInput\.value\s*=(?!=)/.test(appSource), false, "não escrever resposta no campo da conta Binance");
+assert.match(appSource, /exchange === "binance" \? "yes" : hasBinanceInput\.value/);
 assert.match(appSource, /if \(!affiliateAvailable\)[\s\S]*convertBlock\.classList\.remove\("visible"\)/);
 
 for (const line of workflows.split("\n")) {

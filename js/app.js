@@ -37,7 +37,8 @@ function updateBinanceQuestion() {
   const isBinance = exchangeInput.value === "binance";
   hasBinanceField.hidden = isBinance;
   hasBinanceInput.required = !isBinance;
-  if (isBinance) hasBinanceInput.value = "yes";
+  // Não escrever no campo: o submit já deriva hasBinance = "yes" para Binance.
+  // Forçar o valor aqui deixava um "Sim" fantasma ao trocar para outra corretora.
 }
 
 function showEducationRoute(exchange) {
