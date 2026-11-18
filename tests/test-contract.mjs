@@ -23,7 +23,8 @@ assert.match(index, /Content-Security-Policy/);
 assert.equal(index.includes("unsafe-inline"), false);
 assert.equal(index.includes("unsafe-eval"), false);
 assert.equal(index.includes("meta name=\"keywords\""), false);
-assert.match(index, /<script src="js\/fee-model\.js"><\/script>\s*<script src="js\/app\.js"><\/script>/);
+// Os assets podem levar ?v=AAAA-MM-DDx, que força o navegador a buscar a versão nova.
+assert.match(index, /<script src="js\/fee-model\.js(?:\?v=[\w.-]+)?"><\/script>\s*<script src="js\/app\.js(?:\?v=[\w.-]+)?"><\/script>/);
 assert.match(index, /id="form-error"[^>]*tabindex="-1"/);
 assert.match(index, new RegExp(`<link rel="canonical" href="${canonical}">`));
 assert.match(index, new RegExp(`<meta property="og:url" content="${canonical}">`));
