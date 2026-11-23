@@ -5,7 +5,7 @@
 
 .field-help {
   color: var(--text-faint);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.55;
   margin: 2px 0 14px;
 }
@@ -17,7 +17,7 @@
 .form-error {
   border-left: 3px solid var(--red);
   color: var(--red);
-  font-size: 15px;
+  font-size: 0.9375rem;
   margin: 0 0 12px;
   padding: 4px 0 4px 12px;
 }
@@ -42,20 +42,20 @@
 
 .fee-chart h3 {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 1.0625rem;
   margin: 0 0 4px;
 }
 
 .fee-chart p {
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
 }
 
 .fee-chart-source {
   color: var(--text-faint);
-  font-size: 13px;
+  font-size: 0.8125rem;
   white-space: nowrap;
 }
 
@@ -122,12 +122,12 @@
   transition: none;
 }
 .card.result-hero .result-kicker { color: var(--sky-light); }
-.card.result-hero .result-banner .big-stat { font-size: 46px; }
+.card.result-hero .result-banner .big-stat { font-size: 2.875rem; }
 /* Rótulo em cima, número embaixo; a ordem no HTML não muda para o texto copiado continuar igual. */
 .card.result-hero .stat-box .label { order: -1; }
 /* Notas dentro do cartão: filete, sem caixa. */
 .card.result-hero .note { max-width: none; background: none; border: 0; border-left: 3px solid var(--amber); border-radius: 0; padding: 2px 0 2px 16px; margin: 22px 0 0; }
-.card.result-hero .note.is-warn > p:first-child { color: var(--text-dim); font-size: 12px; }
+.card.result-hero .note.is-warn > p:first-child { color: var(--text-dim); font-size: 0.75rem; }
 /* O bloco 21 pinta caixa em todo div de .result-stats dentro de .result-hero; aqui as estatísticas
    são colunas com separador fino, como no resto do kit. */
 .card.result-hero .result-stats { gap: 0; }
